@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# This is a termux-url-opener script to do different tasks on my Android phone
+# based on LordH3lmchen 's script
+#
+
+url="$1"
+echo "What should I do with $url ?"
+echo "ytv - Download the video from YouTube"
+echo "yta - Download the audio from YouTube"
+echo "x   - exit"
+
+read CHOICE
+case $CHOICE in
+  yta)
+    youtube-dl -f 'bestaudio[ext=m4a]/best' $url
+    echo Download complete
+    ;;
+  ytv)
+    youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $url
+    echo Download complete
+    ;;
+  x)
+    echo "Goodbye"
+    ;;
+  *)
+    echo "'basename ${0}':usage //todo"
+    exit 1
+    ;;
+esac
