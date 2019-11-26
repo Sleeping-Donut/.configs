@@ -3,28 +3,137 @@
 # This is a termux-url-opener script to do different tasks on my Android phone
 # based on LordH3lmchen 's script
 #
-
 url="$1"
-echo "What should I do with $url ?"
-echo "ytv - Download the video from YouTube"
-echo "yta - Download the audio from YouTube"
-echo "x   - exit"
+setPath()
 
-read CHOICE
+function setPath() {
+  path='/data/data/com.termux/files/home/storage/downloads/youtube-dl/%(extractor_keys)s'
+}
+
+# MARKER start
+echo "What source is this?"
+echo "YouTube:	yt  youtube"
+echo "twitter:	tw  twitter"
+echo "Custom:   c   custom"
+echo "Exit:	    x   exit"
+read CHOICE	
+
 case $CHOICE in
-  yta)
-    youtube-dl -f 'bestaudio[ext=m4a]/best' $url
-    echo Download complete
+  yt | youtube)
+    path="${path}/%(uploader)s/%(title)s-%(id)s.$(ext)s"
+    # MARKER youtube
+    echo "What settings do you want?"
+    echo "Default video:	v video"
+    echo "Default audio:	a audio"
+    read CHOICE
+
+    case $CHOICE in
+      a | audio)
+        youtube-dl -f 'bestaudio[ext=m4a]/best' $url
+        echo "Download complete"
+        ;;
+      v | video)
+        youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
+        echo "Download complete"
+        ;;
+      x | exit)
+        # exit with goodbye message
+        echo "Goodbye"
+			*)
+				echo "Invalid selection"
+        exit 24 # exit to youtube
+		    ;;
     ;;
-  ytv)
-    youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $url
-    echo Download complete
+
+  tw | twiiter)
+    path="${path}/%(uploader)s/%(id)s.%(ext)s"
+		# MARKER twitter		
+		echo "Video:  v video"
+    echo "GIF:    g gif"
+    echo "Audio:  a audio"
+    echo "Exit:   x exit"
+		read CHOICE
+
+		case $CHOICE in
+			v | video)
+        youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
+        echo ask include audio
+				;;
+			g | gif)
+        # get path and move there
+        setPath()
+        path= "${path}/$(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(uploader)s' $url)"
+        mkdir -p ${path}
+        cd ${path}
+        # get filter and create gif 
+				ffmpeg -i $(youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $url) -filter_complex "[0:v]palettegen[p];[0:v][p]paletteuse" -o $(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(id)s.%(ext)s' $url)
+        ;;
+      a | audio)
+        youtube-dl -f 'bestaudio[ext=m4a]/bestaudio/best' -o $path $url
+        ;;
+      x | exit)
+        # exit with goodbye message
+        echo "Goodbye"
+        ;;
+      *)
+        echo "Invalid choice"
+        exit 50 # exit to twitter
+        ;;
     ;;
-  x)
+
+	c | custom)
+		videoArg='bestvideo'
+		videoCond='[format=mp4]'
+		audioArg='bestaudio'
+		audioCond='[format=mp3]'
+    setPath()
+    default=${videoArg videoCond}+${audioArg}${audioCond}
+
+    echo "default: ${default} -o [...]/youtube-dl/ [url]}"
+    # MARKER custom
+    echo "Set video conditions: v video"
+    echo "Set audio conditions: a audio"
+    echo "Set output path:      o output"
+    echo "Finish + get file:    d done"
+    echo "Exit:                 x exit"
+    read CHOICE
+
+    case $CHOICE in
+      v | video)
+        echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
+        read videoCond
+        exit 93 # exit to custom
+        ;;
+      a | audio)
+        echo  "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
+        read audioCond
+        exit 93 # exit to custom
+        ;;
+      o | ouput)
+        echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#output-template"
+        read path
+        exit 93 # exit to custom
+        ;;
+      d | done)
+        echo "Downloading..."
+        youtube-dl -f ${videoArg}
+        ;;
+      x | exit)
+        # exit with goodbye message
+        echo "Goodbye"
+        ;;
+      *)
+        echo "Invalid selection"
+        exit 93 # exit to custom
+        ;;
+	  ;;
+	x | exit)
+    # exit with goodbye message
     echo "Goodbye"
     ;;
   *)
+    # if invalid input redo
     echo "'basename ${0}':usage //todo"
-    exit 1
+    exit 13	# exit to start
     ;;
 esac
