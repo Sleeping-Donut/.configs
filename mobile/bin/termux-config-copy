@@ -1,6 +1,6 @@
 #!/usr/bin
 cd ..
 cd ..
-cp ./.configs ~/
+cp -r ./.configs ~/
 cd ./mobile/bin
-cp .. ~/
+cp -r .. ~/
