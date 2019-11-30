@@ -4,11 +4,11 @@
 # based on LordH3lmchen 's script
 #
 url="$1"
-setPath()
 
-function setPath() {
+setPath() {
   path='/data/data/com.termux/files/home/storage/downloads/youtube-dl/%(extractor_keys)s'
 }
+setPath
 
 # MARKER start
 echo "What source is this?"
@@ -61,7 +61,7 @@ case $CHOICE in
 				;;
 			g | gif)
         # get path and move there
-        setPath()
+        setPath
         path= "${path}/$(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(uploader)s' $url)"
         mkdir -p ${path}
         cd ${path}
@@ -86,7 +86,7 @@ case $CHOICE in
 		videoCond='[format=mp4]'
 		audioArg='bestaudio'
 		audioCond='[format=mp3]'
-    setPath()
+    setPath
     default=${videoArg videoCond}+${audioArg}${audioCond}
 
     echo "default: ${default} -o [...]/youtube-dl/ [url]}"
