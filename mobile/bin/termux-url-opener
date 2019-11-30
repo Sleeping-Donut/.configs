@@ -39,6 +39,7 @@ case $CHOICE in
       x | exit)
         # exit with goodbye message
         echo "Goodbye"
+        ;;
 			*)
 				echo "Invalid selection"
         exit 24 # exit to youtube
