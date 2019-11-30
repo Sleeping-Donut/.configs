@@ -4,7 +4,7 @@
 # based on LordH3lmchen 's script
 #
 URL="$1"
-root='~/storage/downloads/youtube-dl/%(extractor_keys)s'
+root='~/storage/downloads/youtube-dl/%(extractor)s'
 
 # MARKER start
 echo "What source is this?"
