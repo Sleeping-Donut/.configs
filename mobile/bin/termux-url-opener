@@ -17,7 +17,7 @@ echo # newline
 
 case $CHOICE in
   yt | youtube)
-    path="${root}/%(uploader)s/%(title)s-%(id)s.$(ext)s"
+    path="${root}/%(uploader)s/%(title)s-%(id)s.%(ext)s"
     # MARKER youtube
     echo "What settings do you want?"
     echo "Default video:	v video"
