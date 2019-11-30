@@ -12,11 +12,12 @@ setPath
 
 # MARKER start
 echo "What source is this?"
-echo "YouTube:	yt  youtube"
-echo "twitter:	tw  twitter"
+echo "YouTube:  yt  youtube"
+echo "twitter:  tw  twitter"
 echo "Custom:   c   custom"
-echo "Exit:	    x   exit"
-read CHOICE	
+echo "Exit:     x   exit"
+read CHOICE
+echo # newline
 
 case $CHOICE in
   yt | youtube)
@@ -26,6 +27,7 @@ case $CHOICE in
     echo "Default video:	v video"
     echo "Default audio:	a audio"
     read CHOICE
+    echo # newline
 
     case $CHOICE in
       a | audio)
@@ -42,8 +44,9 @@ case $CHOICE in
         ;;
 			*)
 				echo "Invalid selection"
-        exit 24 # exit to youtube
+        exit 25 # exit to youtube
 		    ;;
+      esac
     ;;
 
   tw | twiiter)
@@ -54,18 +57,32 @@ case $CHOICE in
     echo "Audio:  a audio"
     echo "Exit:   x exit"
 		read CHOICE
+    echo # newline
 
 		case $CHOICE in
 			v | video)
-        youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
-        echo ask include audio
+        echo "With Audio?   Y/n"
+        read CHOICE
+        echo # newline
+        case $CHOICE in
+        # MARKER twitter v 
+          Y | y | YES | yes)
+            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
+            ;;
+          N | n | NO | no)
+            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]/bestvideo/best' -o $path $url
+            ;;
+          *)
+            echo "Unrecognised input"
+            exit 68 # exit to twitter v
+          esac
 				;;
 			g | gif)
         # get path and move there
         setPath
         path= "${path}/$(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(uploader)s' $url)"
-        mkdir -p ${path}
-        cd ${path}
+        mkdir -p $path
+        cd $path
         # get filter and create gif 
 				ffmpeg -i $(youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $url) -filter_complex "[0:v]palettegen[p];[0:v][p]paletteuse" -o $(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(id)s.%(ext)s' $url)
         ;;
@@ -78,8 +95,9 @@ case $CHOICE in
         ;;
       *)
         echo "Invalid choice"
-        exit 50 # exit to twitter
+        exit 54 # exit to twitter
         ;;
+      esac
     ;;
 
 	c | custom)
@@ -88,9 +106,9 @@ case $CHOICE in
 		audioArg='bestaudio'
 		audioCond='[format=mp3]'
     setPath
-    default=${videoArg videoCond}+${audioArg}${audioCond}
+    default=${videoArg}${videoCond}${audioArg}${audioCond}
 
-    echo "default: ${default} -o [...]/youtube-dl/ [url]}"
+    echo "default: $default -o [...]/youtube-dl/ [url]}"
     # MARKER custom
     echo "Set video conditions: v video"
     echo "Set audio conditions: a audio"
@@ -98,22 +116,26 @@ case $CHOICE in
     echo "Finish + get file:    d done"
     echo "Exit:                 x exit"
     read CHOICE
+    echo # newline
 
     case $CHOICE in
       v | video)
         echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
         read videoCond
-        exit 93 # exit to custom
+        exit 112 # exit to custom
+        echo # newline
         ;;
       a | audio)
         echo  "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
         read audioCond
-        exit 93 # exit to custom
+        exit 112 # exit to custom
+        echo # newline
         ;;
       o | ouput)
         echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#output-template"
         read path
-        exit 93 # exit to custom
+        exit 112 # exit to custom
+        echo # newline
         ;;
       d | done)
         echo "Downloading..."
@@ -125,9 +147,11 @@ case $CHOICE in
         ;;
       *)
         echo "Invalid selection"
-        exit 93 # exit to custom
+        exit 112 # exit to custom
         ;;
+      esac
 	  ;;
+
 	x | exit)
     # exit with goodbye message
     echo "Goodbye"
