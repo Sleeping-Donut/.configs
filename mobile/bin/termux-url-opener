@@ -40,7 +40,7 @@ case $CHOICE in
         ;;
 			*)
 				echo "Invalid selection"
-        exit 21 # exit to youtube
+        # exit to youtube
 		    ;;
     esac
     ;;
@@ -70,7 +70,7 @@ case $CHOICE in
             ;;
           *)
             echo "Unrecognised input"
-            exit 64 # exit to twitter v
+            # exit to twitter v
             ;;
         esac
 				;;
@@ -92,7 +92,7 @@ case $CHOICE in
       *)
         echo "Invalid input"
         echo # newline
-        exit 50 # exit to twitter
+        # exit to twitter
         ;;
     esac
     ;;
@@ -118,8 +118,8 @@ case $CHOICE in
     ;;
   *)
     # if invalid input redo
-    echo "'invalid input"
+    echo "invalid input"
     echo # newline
-    exit 9	# exit to start
+    # exit to start
     ;;
 esac
