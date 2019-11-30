@@ -3,12 +3,8 @@
 # This is a termux-url-opener script to do different tasks on my Android phone
 # based on LordH3lmchen 's script
 #
-url="$1"
-
-setPath() {
-  path='/data/data/com.termux/files/home/storage/downloads/youtube-dl/%(extractor_keys)s'
-}
-setPath
+URL="$1"
+root='~/storage/downloads/youtube-dl/%(extractor_keys)s'
 
 # MARKER start
 echo "What source is this?"
@@ -21,7 +17,7 @@ echo # newline
 
 case $CHOICE in
   yt | youtube)
-    path="${path}/%(uploader)s/%(title)s-%(id)s.$(ext)s"
+    path="${root}/%(uploader)s/%(title)s-%(id)s.$(ext)s"
     # MARKER youtube
     echo "What settings do you want?"
     echo "Default video:	v video"
@@ -31,11 +27,11 @@ case $CHOICE in
 
     case $CHOICE in
       a | audio)
-        youtube-dl -f 'bestaudio[ext=m4a]/best' $url
+        youtube-dl -f 'bestaudio[ext=m4a]/best' $URL
         echo "Download complete"
         ;;
       v | video)
-        youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
+        youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $URL
         echo "Download complete"
         ;;
       x | exit)
@@ -44,13 +40,13 @@ case $CHOICE in
         ;;
 			*)
 				echo "Invalid selection"
-        exit 25 # exit to youtube
+        exit 21 # exit to youtube
 		    ;;
-      esac
+    esac
     ;;
 
   tw | twiiter)
-    path="${path}/%(uploader)s/%(id)s.%(ext)s"
+    path="${root}/%(uploader)s/%(id)s.%(ext)s"
 		# MARKER twitter		
 		echo "Video:  v video"
     echo "GIF:    g gif"
@@ -67,90 +63,54 @@ case $CHOICE in
         case $CHOICE in
         # MARKER twitter v 
           Y | y | YES | yes)
-            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $url
+            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o $path $URL
             ;;
           N | n | NO | no)
-            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]/bestvideo/best' -o $path $url
+            youtube-dl -f 'bestvideo[height<=1080][ext=mp4]/bestvideo/best' -o $path $URL
             ;;
           *)
             echo "Unrecognised input"
-            exit 68 # exit to twitter v
-          esac
+            exit 64 # exit to twitter v
+            ;;
+        esac
 				;;
 			g | gif)
         # get path and move there
-        setPath
-        path= "${path}/$(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(uploader)s' $url)"
+        path= "${root}/$(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(uploader)s' $URL)"
         mkdir -p $path
         cd $path
         # get filter and create gif 
-				ffmpeg -i $(youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $url) -filter_complex "[0:v]palettegen[p];[0:v][p]paletteuse" -o $(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(id)s.%(ext)s' $url)
+				ffmpeg -i $(youtube-dl -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' $URL) -filter_complex "[0:v]palettegen[p];[0:v][p]paletteuse" -o $(youtube-dl --get-filename -f 'bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best' -o '%(id)s.%(ext)s' $URL)
         ;;
       a | audio)
-        youtube-dl -f 'bestaudio[ext=m4a]/bestaudio/best' -o $path $url
+        youtube-dl -f 'bestaudio[ext=m4a]/bestaudio/best' -o $path $URL
         ;;
       x | exit)
         # exit with goodbye message
         echo "Goodbye"
         ;;
       *)
-        echo "Invalid choice"
-        exit 54 # exit to twitter
+        echo "Invalid input"
+        echo # newline
+        exit 50 # exit to twitter
         ;;
-      esac
+    esac
     ;;
 
 	c | custom)
-		videoArg='bestvideo'
-		videoCond='[format=mp4]'
-		audioArg='bestaudio'
-		audioCond='[format=mp3]'
-    setPath
-    default=${videoArg}${videoCond}${audioArg}${audioCond}
-
-    echo "default: $default -o [...]/youtube-dl/ [url]}"
     # MARKER custom
-    echo "Set video conditions: v video"
-    echo "Set audio conditions: a audio"
-    echo "Set output path:      o output"
-    echo "Finish + get file:    d done"
-    echo "Exit:                 x exit"
-    read CHOICE
+    echo "Format options:"
+    echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
+    echo "Output options:"
+    echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
+    echo # newline
+    echo "Enter youtube dl command:"
+    echo "format: youtube-dl [user input] URL"
+    read COMMAND
     echo # newline
 
-    case $CHOICE in
-      v | video)
-        echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
-        read videoCond
-        exit 112 # exit to custom
-        echo # newline
-        ;;
-      a | audio)
-        echo  "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#format-selection"
-        read audioCond
-        exit 112 # exit to custom
-        echo # newline
-        ;;
-      o | ouput)
-        echo "https://github.com/ytdl-org/youtube-dl/blob/master/README.md#output-template"
-        read path
-        exit 112 # exit to custom
-        echo # newline
-        ;;
-      d | done)
-        echo "Downloading..."
-        youtube-dl -f ${videoArg}
-        ;;
-      x | exit)
-        # exit with goodbye message
-        echo "Goodbye"
-        ;;
-      *)
-        echo "Invalid selection"
-        exit 112 # exit to custom
-        ;;
-      esac
-	  ;;
+    youtube-dl $COMMAND $URL
+    ;;
 
 	x | exit)
     # exit with goodbye message
@@ -158,7 +118,8 @@ case $CHOICE in
     ;;
   *)
     # if invalid input redo
-    echo "'basename ${0}':usage //todo"
-    exit 13	# exit to start
+    echo "'invalid input"
+    echo # newline
+    exit 9	# exit to start
     ;;
 esac
