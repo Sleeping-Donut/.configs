@@ -284,7 +284,7 @@ fun! CleanExtraSpaces()
   let save_cursor = getpos(".")
   let old_query = getreg('/')
   silent! %s/\s+$//e
-  call serpos('.', save_cursor)
+  call setpos('.', save_cursor)
   call setreg('/', old_query)
 endfun
 
@@ -325,8 +325,7 @@ map <leader>pp :setlocal paste!<cr>
 """"""""""""""""""""""""""""""""""""""""""""""
 " => Themes section
 """"""""""""""""""""""""""""""""""""""""""""""
-"colorscheme afterglow
-"colorscheme sunbather
+colorscheme molokai
 
 
 """"""""""""""""""""""""""""""""""""""""""""""
@@ -340,8 +339,14 @@ call plug#begin('~/.vim/plugged')
 " Must use single quotes
 
 " --Themes--
-Plug 'nikolvs/vim-sunbather'
-Plug 'danilo-augusto/vim-afterglow'
+"Plug 'nikolvs/vim-sunbather', { 'rtp': 'colors' }
+Plug 'tomasr/molokai', { 'rtp': 'colors' }
+"Plug 'sonph/onehalf', { 'rtp': 'colors' }
+"Plug 'gosukiwi/vim-atom-dark', { 'rtp': 'colors' }
+"Plug 'arcticicestudio/nord-vim', { 'rtp': 'colors' }
+"Plug 'rakr/vim-one', { 'rtp': 'colors' }
+"Plug 'drewtempelmeyer/palenight.vim', { 'rtp': 'colors' }
+"Plug 'danilo-augusto/vim-afterglow'
 "Plug 'co1ncidence/mountaineer.vim'
 "Plug 'sainnhe/sonokai'
 "Plug 'liuchengxu/space-vim-dark'
