@@ -29,7 +29,6 @@
 " Sets how many lines of history VIM has to remember
 "set history=500
 
-
 " Enable filetype plugins
 filetype plugin on
 filetype indent on
@@ -48,6 +47,12 @@ nmap <leader>w :w!<cr>
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 "command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
+
+
+""""""""""""""""""""""""
+" => Variables
+""""""""""""""""""""""""
+
 
 
 """"""""""""""""""""""""
@@ -127,6 +132,14 @@ set noerrorbells
 
 " Add line numbers
 set number
+
+
+" Set cursor to block in normal mode
+"
+" Set cursor to line in insert mode
+"
+" Set cursor to underline in visual etc. mode
+
 
 """""""""""""""""""""""
 " => Colors and fonts
@@ -370,7 +383,6 @@ Plug 'tomasr/molokai', { 'rtp': 'colors' }
 "Plug 'challenger-deep-theme/vim'
 "Plug 'tyrannicaltoucan/vim-deep-space'
 
-
 " Initialise plugin system
 call plug#end()
 
@@ -378,9 +390,11 @@ call plug#end()
 """""""""""""""""""""""""""""""""""""""""""
 " => Filetype section
 """""""""""""""""""""""""""""""""""""""""""
-source ~/.vim/ftplugin/python.vim
-source ~/.vim/ftplugin/markdown.vim
-source ~/.vim/ftplugin/javascript.vim
+source $HOME/.vim/ftplugin/vim/vim.vim
+source $HOME/.vim/ftplugin/markdown/markdown.vim
+source $HOME/.vim/ftplugin/python/python.vim
+source $HOME/.vim/ftplugin/javascript/javascript.vim
+
 
 """""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
